@@ -5,4 +5,5 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def home(request):
+    print('hello world')
     return HttpResponse(request, 'hello world')

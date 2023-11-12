@@ -22,5 +22,6 @@ from Oauth2 import views as Oauth2
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home.home, name = 'home'),
-    path('accounts/', include('django.contrib.auth.urls'))
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/registration/', Oauth2.registration)
 ]

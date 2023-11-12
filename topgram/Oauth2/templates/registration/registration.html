@@ -14,10 +14,11 @@
           <form method="post">
             {% csrf_token %}
             {{ form.errors }}
+            {{text}}
             <input type="text" name="username" placeholder="Имя пользователя" required="required" />
               <input type="password" name="password" placeholder="Пароль" required="required" />
               <button type="submit" class="btn btn-primary btn-block btn-large">Поехали.</button>
-              <a type="registration", name = 'reg', href = '#' >Уже зарегистрированы?</a>
+              <a type="registration", name = 'reg', href = '/accounts/login' >Уже зарегистрированы?</a>
           </form>
       </div>
 </body>
