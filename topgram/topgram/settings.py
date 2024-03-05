@@ -63,7 +63,7 @@ ROOT_URLCONF = 'topgram.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['Oauth2/templates'],
+        'DIRS': ['Oauth2/templates', 'home/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

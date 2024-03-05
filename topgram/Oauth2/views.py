@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
+from home.models import Users
 
 
 # Create your views here.
@@ -20,16 +21,18 @@ def valid(username, password):
 def registration(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
-    print(username, password)
-
     code, content = valid(username, password)
     if code =='Accept':
+        #  Создание таблицы в auth USER
         user = User.objects.create_user(username, '', password)
         user.save
+
+        # Создание таблицы в home User
+
+        user = Users.objects.create(username = username)
+        user.save
+
         return HttpResponseRedirect('/accounts/login')
-    
-    else:
-        print(content)
     
     return render(request, 'registration/registration.html', context=content)
   
