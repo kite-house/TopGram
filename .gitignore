@@ -1,2 +1,4 @@
 .env
-startDB.bat
+.vscode/
+venv
+.gitignore

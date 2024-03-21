@@ -3,16 +3,19 @@
     // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
     // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [        
         {
             "name": "Отладчик Python: Django",
             "type": "debugpy",
             "request": "launch",
+            "preLaunchTask": "start_Build",
             "program": "${workspaceFolder}\\topgram\\manage.py",
             "args": [
                 "runserver"
             ],
-            "django": true
-        }
-    ]
+            "django": true,
+        },
+        
+    
+    ],
 }
