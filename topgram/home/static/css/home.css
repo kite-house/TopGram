@@ -160,6 +160,40 @@ html {
  flex-shrink: 0;
 }
 
+.wrapper-warning {
+  margin: 10px;
+}
+.wrapper-warning .card {
+  width: 100%;
+  height: 65px;
+  background-color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-left: 5px solid #fd2020;
+  border-radius: 3px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.wrapper-warning .card .subject {
+  margin-right: 10px;
+  font-size: 12px;
+  margin-left: 15px;
+
+}
+.wrapper-warning .card .subject p {
+  color: #909092;
+}
+.wrapper-warning .card .icon {
+  font-size: 25px;
+  color: #fd2020;
+}
+.wrapper-warning .card .icon-times {
+  font-size: 25px;
+  color: #c3c2c7;
+  cursor: pointer;
+}
+
 .detail-area {
  border-left: 1px solid var(--border-color);
  margin-left: auto;

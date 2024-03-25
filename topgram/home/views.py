@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from home.models import Users
 
-
 class Data_user:
     def __init__(self, request, user):
         try:
@@ -90,11 +89,8 @@ class Data_user:
             "last_time_msg": timeMsg
         })
 
-
-
     def send_message(self):
         ''' Отправка и получение сообщений '''
-
         input_message = self.request.POST.get('input_message')
         try:
             message = self.owner_user.messages['recipient_name'][self.recipient_user.username]
@@ -129,10 +125,31 @@ class Data_user:
         self.recipient_user.save()
         return self.recipient_user.username
 
+class Search_user:
+    def __init__(self, request) -> None:
+        self.request = request
+        self.search = self.request.POST.get('search')
+
+    def find(self):
+        return self.valid_search()
+    
+    def valid_search(self):
+        try:
+            Users.objects.get(username = self.search)
+        except Exception:
+            return 'error_search'
+        else:
+            return self.search
+
+
 
 @login_required
 def home(request, user = None):
     if request.method == "POST":
-        return http.HttpResponseRedirect(f'/{Data_user(request,user).send_message()}/')
-
+        if request.POST.get('search') != None:
+            return http.HttpResponseRedirect(f'/{Search_user(request).find()}/')
+        
+        
+        elif request.POST.get('input_message') != None:
+            return http.HttpResponseRedirect(f'/{Data_user(request,user).send_message()}/')
     return render(request, 'home.html', context=Data_user(request,user).data())

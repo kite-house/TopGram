@@ -8,6 +8,16 @@
   <title>Home</title>
   <link rel="stylesheet" href= "{% static 'css/home.css' %}">
   <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap"
+    rel="stylesheet"
+  />
 </head>
 
 <body>
@@ -37,15 +47,35 @@
     </div>
     <div class="wrapper">
       <div class="conversation-area">
-        <form onsubmit="event.preventDefault();" role="search">
+        <form action = '' role="search", method="post"> {% csrf_token %}
           <label for="search"></label>
-          <input id="search" type="search" placeholder="Поиск..." autofocus required />
-          <button type="submit">Go</button>    
+          <input name = 'search' id="search" type="search" placeholder="Поиск..." autofocus required />
+          <button type="submit">Go</button> 
         </form>
 
+        {% if request.path == '/error_search/' %}
+        
+        <div class="wrapper-warning">
+          <div class="card">
+            <div class="icon"><i class="fas fa-exclamation-circle"></i></div>
+            <div class="subject">
+              <h4>Данный пользователь не найден!<h4>
+            </div >
+            <a href="/{{chat.name}}" style ="text-decoration: none; color: black;">
+            <div class="icon-times"><i class="fas fa-times"></i></div>
+            </a>
+          </div>
+        </div>
+        {% endif %}   
+
+
         {% for chat in chat_list %}
-        <a href="/{{chat.name}}" style ="text-decoration: none; color: black;">
+        <a href="/" style ="text-decoration: none; color: black;">
+        {% if chat.name == recipient_name %}
+        <div class="msg active">
+        {% else %}
         <div class="msg">
+        {% endif %}
           <link href="{{chat.name}}">
           <img class="msg-profile" src= {{chat.avatar}}>
           <div class="msg-detail">
