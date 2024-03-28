@@ -1,9 +1,7 @@
 from django.db import models
-from datetime import datetime
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 from django.utils import timezone
-
 
 class Users(models.Model):
     username = models.CharField(max_length = 150)
@@ -21,8 +19,9 @@ class Users(models.Model):
 
     def get_online_info(self):
         if self.is_online():
-            return _('online')
+            return _('В сети')
         if self.last_online:
-            return _('Last visit {}').format(naturaltime(self.last_online))
+            return _('Был(а) в сети: {}').format(naturaltime(self.last_online))
+        
 
-        return _('Unknown')
+        return _('Был недавно')

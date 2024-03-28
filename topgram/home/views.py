@@ -58,7 +58,7 @@ class Data_user:
                 messages_edit.append({
                     "id" : message['id'],
                     "time" : self.display_time(message['time']),
-                    "sender_status" : sender_status,
+                    'sender_status' : sender_status,
                     "sender_avatar" : Users.objects.get(username = message['sender_name']).avatar,
                     "content" : message['content']
                 })
@@ -84,6 +84,7 @@ class Data_user:
             "owner_name" : self.owner_user.username,
             'recipient_name' : self.recipient_user.username,
             'recipient_avatar' : self.recipient_user.avatar,
+            'is_online' : self.recipient_user.get_online_info(),
             "owner_avatar" : self.owner_user.avatar,
             "chat_list" : chat_list[::-1],
             "messages" : messages_edit
