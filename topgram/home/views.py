@@ -7,7 +7,7 @@ from home.models import Users
 import pytz
 from django.http import JsonResponse
 import json
-
+from django.utils import timezone
 
 
 class Data_user:
@@ -16,13 +16,19 @@ class Data_user:
             recipient_user = Users.objects.get(username = user)
         except Exception:
             recipient_user = Users.objects.get(username = request.user)
-        owner_user = Users.objects.get(username = request.user)
-        
+
+        if 'user_timezone' in request.session:
+            request.session['user_timezone']
+
+        else:
+            request.session['user_timezone'] = 'Europe/Dublin'
+
         self.request = request
         self.user = user
         self.recipient_user = recipient_user
-        self.owner_user = owner_user
-
+        self.owner_user = Users.objects.get(username = request.user)
+        self.owner_user.last_online = timezone.now()  # At the request of the user, we will update the date and time of the last visit
+        self.owner_user.save(update_fields=['last_online'])
 
     def display_time(self, timeMsg):
         today = datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M")
@@ -60,12 +66,13 @@ class Data_user:
 
         chat_list = []
         for chat in self.owner_user.chat_list:
-            # проверка онлайна ---
+            chat_user = Users.objects.get(username = chat['name'])
 
             chat_list.append({
                 "id" : chat['id'],
                 'name' : chat['name'],
-                "avatar" : chat['avatar'],
+                "avatar" : chat_user.avatar,
+                "is_online" : chat_user.is_online(),
                 "last_msg" : chat['last_msg'],
                 "last_time_msg" : self.display_time(chat['last_time_msg'])
             })
@@ -183,12 +190,6 @@ def save_timezone(request):
 
 @login_required
 def home(request, user = None):
-    if 'user_timezone' in request.session:
-        request.session['user_timezone']
-
-    else:
-        request.session['user_timezone'] = 'Europe/Dublin'
-
     if request.method == "POST":
         if request.POST.get('search') != None:
             return http.HttpResponseRedirect(f'/{Search_user(request).find()}/')
