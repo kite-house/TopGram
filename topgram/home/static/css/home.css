@@ -439,12 +439,14 @@ input:not(:placeholder-shown) {
   font-size: 15px;
   font-weight: 500;
   margin-left:10px;
-
+  position: fixed;
  }
 
  .chat-area-online {
   font-weight: 500;
+  position: fixed;
   font-size: 15px;
+  margin-top: 20px;
   margin-left: 10px;
   color: #0a5392;
   border-bottom: 1px solid var(--border-color);
@@ -533,11 +535,11 @@ input:not(:placeholder-shown) {
 .chat-area-footer {
  display: flex;
  border-top: 1px solid var(--border-color);
- width: 73%;
- padding: 10px 20px;
+ width: 73.2%;
+ padding: 20px 20px;
  align-items: center;
  background-color: var(--theme-bg-color);
- position:fixed;
+ position: fixed;
  bottom: 0;
  left: auto;
 }
