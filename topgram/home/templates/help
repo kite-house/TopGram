@@ -1,1 +1,0 @@
-class chat-msg имеет два состояние(1-Null = Отправка от другого лица, 2-owner = отправка от вашего лица). class msg имеет 3 состояние(active, online,null)
