@@ -70,7 +70,7 @@
 
 
         {% for chat in chat_list %}
-        <a href="/" style ="text-decoration: none; color: black;">
+        <a href="/{{chat.name}}" style ="text-decoration: none; color: black;">
         {% if chat.name == recipient_name %}
         <div class="msg active">
         {% else %}

@@ -13,9 +13,37 @@ function dark_light(){
   document.body.classList.toggle("dark-mode");
 }
 
-error: {
-  icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-</svg>`,
-  color: "red-500"
-},
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
+
+var userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+var csrftoken = getCookie('csrftoken');
+var xhr = new XMLHttpRequest();
+xhr.open('POST', '/save_timezone/', true);
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.setRequestHeader('X-CSRFToken', csrftoken); // Добавляем CSRF токен к заголовкам запроса
+
+xhr.onreadystatechange = function() {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+            console.log('Timezone saved successfully');
+        } else {
+            console.error('Error saving timezone');
+        }
+    }
+};
+
+xhr.send(JSON.stringify({ timezone: userTimezone }));

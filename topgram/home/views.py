@@ -2,7 +2,13 @@ from django.shortcuts import render
 from django import http
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+from datetime import datetime
 from home.models import Users
+import pytz
+from django.http import JsonResponse
+import json
+
+
 
 class Data_user:
     def __init__(self, request, user):
@@ -17,28 +23,52 @@ class Data_user:
         self.recipient_user = recipient_user
         self.owner_user = owner_user
 
+
+    def display_time(self, timeMsg):
+        today = datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M")
+        if today.split(' ')[0] == timeMsg.split(' ')[0]:
+            timeMsg = timeMsg.split(' ')[1]
+
+        else:
+            timeMsg = timeMsg.split(' ')[0] 
+
+        return timeMsg
+
     def data(self):
         ''' Вывод данных в html шаблон '''
 
         try:
             messages = self.owner_user.messages['recipient_name'][self.recipient_user.username]
         except Exception:
-            messages1 = {}
+            messages_edit = {}
         else:
-            messages1 = []
+            messages_edit = []
             for message in messages:
                 if message['sender_name'] == self.owner_user.username:
                     sender_status = 'owner'
 
                 else:
                     sender_status = ''
-                messages1.append({
+                messages_edit.append({
                     "id" : message['id'],
-                    "time" : message['time'],
+                    "time" : self.display_time(message['time']),
                     "sender_status" : sender_status,
                     "sender_avatar" : Users.objects.get(username = message['sender_name']).avatar,
                     "content" : message['content']
                 })
+
+
+        chat_list = []
+        for chat in self.owner_user.chat_list:
+            # проверка онлайна ---
+
+            chat_list.append({
+                "id" : chat['id'],
+                'name' : chat['name'],
+                "avatar" : chat['avatar'],
+                "last_msg" : chat['last_msg'],
+                "last_time_msg" : self.display_time(chat['last_time_msg'])
+            })
         
         if self.recipient_user == None:
             self.recipient_user.username = "None"
@@ -48,8 +78,8 @@ class Data_user:
             'recipient_name' : self.recipient_user.username,
             'recipient_avatar' : self.recipient_user.avatar,
             "owner_avatar" : self.owner_user.avatar,
-            "chat_list" : self.owner_user.chat_list[::-1],
-            "messages" : messages1
+            "chat_list" : chat_list[::-1],
+            "messages" : messages_edit
         }
         return data
     
@@ -100,12 +130,12 @@ class Data_user:
 
         message.append({
             "id" : len(message) + 1,
-            "time" : "datetime_beta",
+            "time" : datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"),
             'content' : input_message,
             'sender_name' : self.owner_user.username
         })
 
-        self.update_chat_list(input_message, 'datetime_beta')
+        self.update_chat_list(input_message, datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"))
 
         self.owner_user.save()
 
@@ -117,7 +147,7 @@ class Data_user:
 
         message.append({
             "id" : len(message) + 1,
-            "time" : "datetime_beta",
+            "time" : datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"),
             'content' : input_message,
             'sender_name' : self.owner_user.username
         })
@@ -126,6 +156,7 @@ class Data_user:
         return self.recipient_user.username
 
 class Search_user:
+
     def __init__(self, request) -> None:
         self.request = request
         self.search = self.request.POST.get('search')
@@ -141,10 +172,23 @@ class Search_user:
         else:
             return self.search
 
+def save_timezone(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        request.session['user_timezone'] = data.get('timezone')
 
+        return JsonResponse({'message': 'Timezone saved successfully'}, status=200)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 @login_required
 def home(request, user = None):
+    if 'user_timezone' in request.session:
+        request.session['user_timezone']
+
+    else:
+        request.session['user_timezone'] = 'Europe/Dublin'
+
     if request.method == "POST":
         if request.POST.get('search') != None:
             return http.HttpResponseRedirect(f'/{Search_user(request).find()}/')
@@ -152,4 +196,5 @@ def home(request, user = None):
         
         elif request.POST.get('input_message') != None:
             return http.HttpResponseRedirect(f'/{Data_user(request,user).send_message()}/')
+
     return render(request, 'home.html', context=Data_user(request,user).data())
