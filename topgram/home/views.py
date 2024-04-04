@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django import http
 from django.contrib.auth.decorators import login_required
-# Create your views here.
 from datetime import datetime
 from home.models import Users
 import pytz
@@ -70,7 +69,8 @@ class Data_user:
 
             chat_list.append({
                 "id" : chat['id'],
-                'name' : chat['name'],
+                'username' : chat['name'],
+                'name' : Users.objects.get(username = chat['name']).display_name,
                 "avatar" : chat_user.avatar,
                 "is_online" : chat_user.is_online(),
                 "last_msg" : chat['last_msg'],
@@ -82,7 +82,7 @@ class Data_user:
         
         data = {
             "owner_name" : self.owner_user.username,
-            'recipient_name' : self.recipient_user.username,
+            'recipient_name' : self.recipient_user.display_name,
             'recipient_avatar' : self.recipient_user.avatar,
             'is_online' : self.recipient_user.get_online_info(),
             "owner_avatar" : self.owner_user.avatar,
@@ -142,7 +142,6 @@ class Data_user:
             'content' : input_message,
             'sender_name' : self.owner_user.username
         })
-
         self.update_chat_list(input_message, datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"))
 
         self.owner_user.save()
@@ -164,7 +163,6 @@ class Data_user:
         return self.recipient_user.username
 
 class Search_user:
-
     def __init__(self, request) -> None:
         self.request = request
         self.search = self.request.POST.get('search')
@@ -198,5 +196,5 @@ def home(request, user = None):
         
         elif request.POST.get('input_message') != None:
             return http.HttpResponseRedirect(f'/{Data_user(request,user).send_message()}/')
-
     return render(request, 'home.html', context=Data_user(request,user).data())
+    
