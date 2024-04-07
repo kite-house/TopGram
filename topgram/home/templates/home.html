@@ -48,7 +48,7 @@
     </div>
     <div class="wrapper">
       <div class="conversation-area">
-        <form action = '' role="search", method="post"> {% csrf_token %}
+        <form action = '' role="search" autocomplete="off" method="post"> {% csrf_token %}
           <label for="search"></label>
           <input name = 'search' id="search" type="search" placeholder="Поиск..." autofocus required />
           <button type="submit">Go</button> 
@@ -68,7 +68,6 @@
           </div>
         </div>
         {% endif %}   
-
 
         {% for chat in chat_list %}
         <a href="/{{chat.username}}" style ="text-decoration: none; color: black;">
@@ -98,8 +97,8 @@
             <div class="chat-area-online">{{is_online}}</div>
           {% endif %}
         </div>
-        {% for message in messages %}
         <div class="chat-area-main">
+          {% for message in messages %}
           <div class="chat-msg {{message.sender_status}}">
             <div class="chat-msg-profile">
               <img class="chat-msg-img" src="{{message.sender_avatar}}" alt="">
@@ -109,9 +108,9 @@
               <div class="chat-msg-text">{{message.content}}</div>
             </div>
           </div>
+          {% endfor %}
         </div> 
-        {% endfor %}
-        <form action = '' method="post"> {% csrf_token %}
+        <form action = '' method="post" autocomplete="off"> {% csrf_token %}
       <div class="chat-area-footer">          
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video">
@@ -140,11 +139,7 @@
             <circle cx="12" cy="12" r="10" />
             <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" />
           </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-up">
-            <path
-              d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" />
-          </svg>
+
         </div>
       </form>
       </div>
