@@ -129,7 +129,9 @@ class Data_user:
 
     def send_message(self):
         ''' Отправка и получение сообщений '''
+        
         input_message = self.request.POST.get('input_message')
+
         try:
             message = self.owner_user.messages['recipient_name'][self.recipient_user.username]
         except Exception:
@@ -160,7 +162,8 @@ class Data_user:
         })
         
         self.recipient_user.save()
-        return self.recipient_user.username
+
+        return message[-1]
 
 class Search_user:
     def __init__(self, request) -> None:
@@ -193,8 +196,11 @@ def home(request, user = None):
         if request.POST.get('search') != None:
             return http.HttpResponseRedirect(f'/{Search_user(request).find()}/')
         
-        
         elif request.POST.get('input_message') != None:
-            return http.HttpResponseRedirect(f'/{Data_user(request,user).send_message()}/')
+            Data_user(request,user).send_message()
+            return http.HttpResponse(render(request, 'home.html', context=Data_user(request,user).data()))
+            
+            #return http.HttpResponse(context=Data_user(request,user).data())
     return render(request, 'home.html', context=Data_user(request,user).data())
+
     

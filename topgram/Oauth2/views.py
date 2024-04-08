@@ -24,12 +24,12 @@ def registration(request):
     code, content = valid(username, password)
     if code =='Accept':
         #  Создание таблицы в auth USER
-        user = User.objects.create_user(username, '', password)
+        user = User.objects.create_user(username,'', password)
         user.save
 
         # Создание таблицы в home User
 
-        user = Users.objects.create(username = username)
+        user = Users.objects.create(username = username, display_name = username)
         user.save
 
         return HttpResponseRedirect('/accounts/login')

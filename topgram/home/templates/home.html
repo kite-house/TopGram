@@ -6,17 +6,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  <link rel="shortcut icon" type="image/png" href="{% static 'favicon/logo.png' %}"">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="shortcut icon" type="image/png" href="{% static 'favicon/logo.png' %}">
   <link rel="stylesheet" href= "{% static 'css/home.css' %}">
   <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
-    rel="stylesheet"
-  />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap"
     rel="stylesheet"
   />
 </head>
@@ -110,7 +105,7 @@
           </div>
           {% endfor %}
         </div> 
-        <form action = '' method="post" autocomplete="off"> {% csrf_token %}
+        <form id = 'input_message' action = '' autocomplete="off"> {% csrf_token %}
       <div class="chat-area-footer">          
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video">
