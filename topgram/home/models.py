@@ -10,6 +10,14 @@ class Users(models.Model):
     chat_list = models.JSONField(default=list)
     messages = models.JSONField(default=dict)
     last_online = models.DateTimeField(blank=True, null=True)
+
+    def search(request):
+        try:
+            Users.objects.get(username = request.POST.get('search'))
+        except Exception:
+            return 'error_search'
+        else:
+            return request.POST.get('search')
  
     def is_online(self):
         if self.last_online:
