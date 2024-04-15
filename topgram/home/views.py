@@ -1,11 +1,10 @@
 from django.shortcuts import render
 from django import http
 from django.contrib.auth.decorators import login_required
-from home.models import Users
+from home.models import Users 
 from django.http import JsonResponse
 from json import loads
-from userData import UserData
-
+from .userData import UserData
 def save_timezone(request):
     ''' Получение UTC пользователя'''
     if request.method == 'POST':
@@ -19,6 +18,10 @@ def save_timezone(request):
 def home(request, user = None):
     ''' Главная страница '''
     if request.method == "POST":
+        if request.POST.get('edit_avatar') != None:
+            Users.objects.get(username = request.user).edit_user(request)
+            return http.HttpResponseRedirect('/')
+
         if request.POST.get('search') != None:
             return http.HttpResponseRedirect(f'/{Users().search(request)}/')
         

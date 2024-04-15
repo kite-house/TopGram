@@ -3,6 +3,7 @@ from datetime import datetime
 from home.models import Users
 import pytz
 from django.utils import timezone
+from Oauth2.models import User as auth_user
 
 class UserData:
     ''' Класс для обработки запросов пользователя '''
@@ -79,10 +80,11 @@ class UserData:
 
         return {
             "owner_name" : self.owner_user.username,
+            "display_owner_name" : self.owner_user.display_name,
             'recipient_name' : self.recipient_user.display_name,
             'recipient_avatar' : self.recipient_user.avatar,
             'is_online' : self.recipient_user.get_online_info(),
-            "owner_avatar" : self.owner_user.avatar,
+            "owner_avatar" :self.owner_user.avatar,
             "chat_list" : chat_list[::-1],
             "messages" : messages_edit
         }
