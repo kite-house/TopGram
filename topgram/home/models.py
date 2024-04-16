@@ -15,7 +15,6 @@ class Users(models.Model):
     def edit_user(self,request):
         if request.POST.get("edit_avatar") != '':
             self.avatar = request.POST.get('edit_avatar')            
-            print("РЕДАКТИРОВАНИЕ АВАТАРКИ УСПЕШНО")
 
         if request.POST.get("edit_display_name") != '':
             self.display_name = request.POST.get('edit_display_name')
