@@ -229,6 +229,22 @@ input, button {
   color: var(--color-dark);
   font-size: 1rem;
 }
+
+button[id = "search"]{
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--btn-width);
+  font-weight: bold;
+  background: var(--color-brand);
+  border-radius: 0 var(--rad) var(--rad) 0;
+}
+
+button[id = "search"]:hover{
+  background-color: rgb(2, 158, 67);
+}
+
 input[type="search"] {
   color: var(--chat-text-color);
   outline: 0;   
@@ -243,16 +259,7 @@ input[type="search"] {
   z-index: 1;
   position: relative;
 }
-button {
-  display: none;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: var(--btn-width);
-  font-weight: bold;
-  background: var(--color-brand);
-  border-radius: 0 var(--rad) var(--rad) 0;
-}
+
 input:not(:placeholder-shown) {
   border-radius: var(--rad) 0 0 var(--rad);
   width: calc(100% - var(--btn-width));
@@ -641,10 +648,33 @@ input:not(:placeholder-shown) {
  border-radius: 6px;
  font-size: 15px;
  margin: 0 12px;
- width: 100%;
+ width: 500%;
  &::placeholder {
   color: var(--input-chat-color);
  }
+}
+
+
+.emoji-menu {
+  position: absolute;
+  top: -270px; /* Adjust as needed to position the menu above the SVG */
+  left: 76%;
+  width: 280px;
+  height: 260px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  border-radius: 12px;
+  z-index: 1000; /* Ensure the menu appears above other elements */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  button {
+    border-radius: 12px;
+  }
+
+  button:hover {
+    background-color: gray;
+  }
 }
 
 .detail-area-header {

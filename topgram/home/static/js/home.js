@@ -1,5 +1,4 @@
 function dark_light(){
-  const toggleButton = document.querySelector(".dark-light");
   const colors = document.querySelectorAll(".color");
 
   colors.forEach(color => {
@@ -19,7 +18,6 @@ function getCookie(name) {
       const cookies = document.cookie.split(';');
       for (let i = 0; i < cookies.length; i++) {
           const cookie = cookies[i].trim();
-          // Does this cookie string begin with the name we want?
           if (cookie.substring(0, name.length + 1) === (name + '=')) {
               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
               break;
@@ -57,15 +55,15 @@ $.ajaxSetup({
 $(document).ready(function () {
   $("#input_message").on("submit", function (event) {
     var $form = $(this);
-    event.preventDefault(); // Отменяем стандартное поведение формы
-    // Получаем данные из полей формы
-    // Отправляем данные на сервер с помощью AJAX
+    event.preventDefault();
+
+    document.getElementById('emoji-menu').style.display = 'none';
     $.ajax({
-      url: document.URL, // Здесь указываем URL-адрес серверного обработчика
+      url: document.URL,
       type: "post",
       data: $form.serialize(),
       success: function(data){
-        $("body").html(data); // Заменяем содержимое <body> новыми данными
+        $("body").html(data);
       }
     })
   });
@@ -76,3 +74,23 @@ $.ajaxSetup({
       "X-CSRFToken": getCookie("csrftoken")
   }
 });
+
+$(document).ready(function () {
+  const emojiIcon = document.getElementById('emoji-icon');
+  const emojiMenu = document.getElementById('emoji-menu');
+
+  emojiIcon.addEventListener('click', function() {
+    if (emojiMenu.style.display === 'block'){
+      emojiMenu.style.display = 'none';
+    }
+    else {
+      emojiMenu.style.display = 'block';
+    }
+  });
+
+});
+
+function insertEmoji(emoji) {
+  var input = document.getElementById('input_message').input_message;
+  input.value += emoji;
+}
