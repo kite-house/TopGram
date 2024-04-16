@@ -3,7 +3,8 @@ from datetime import datetime
 from home.models import Users
 import pytz
 from django.utils import timezone
-from Oauth2.models import User as auth_user
+from cryptography.fernet import Fernet
+from topgram.settings import FERNET_SECRET_KEY
 
 class UserData:
     ''' Класс для обработки запросов пользователя '''
@@ -23,13 +24,13 @@ class UserData:
         self.user = user
         self.recipient_user = recipient_user
         self.owner_user = Users.objects.get(username = request.user)
-        self.owner_user.last_online = timezone.now()  # At the request of the user, we will update the date and time of the last visit
+        self.owner_user.last_online = timezone.now()
         self.owner_user.save(update_fields=['last_online'])
-
+        self.fernet = Fernet(FERNET_SECRET_KEY)
+        
     def display_time(self, timeMsg):
         ''' Отображение времени '''
-        today = datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M")
-        if today.split(' ')[0] == timeMsg.split(' ')[0]:
+        if datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M").split(' ')[0] == timeMsg.split(' ')[0]:
             timeMsg = timeMsg.split(' ')[1]
 
         else:
@@ -57,7 +58,7 @@ class UserData:
                     "time" : self.display_time(message['time']),
                     'sender_status' : sender_status,
                     "sender_avatar" : Users.objects.get(username = message['sender_name']).avatar,
-                    "content" : message['content']
+                    "content" : self.fernet.decrypt(message['content']).decode()
                 })
 
 
@@ -71,7 +72,7 @@ class UserData:
                 'name' : Users.objects.get(username = chat['name']).display_name,
                 "avatar" : chat_user.avatar,
                 "is_online" : chat_user.is_online(),
-                "last_msg" : chat['last_msg'],
+                "last_msg" : self.fernet.decrypt(chat['last_msg']).decode(),
                 "last_time_msg" : self.display_time(chat['last_time_msg'])
             })
         
@@ -111,7 +112,7 @@ class UserData:
             "id": len(self.owner_user.chat_list) + 1,
             "name": self.recipient_user.username,
             "avatar":self.recipient_user.avatar,
-            "last_msg": f"Вы: {msg}",
+            "last_msg": f"Вы: {self.fernet.encrypt(msg.encode()).decode()}",
             "last_time_msg": timeMsg
         })
 
@@ -121,7 +122,7 @@ class UserData:
             "id": len(self.owner_user.chat_list) + 1,
             "name": self.owner_user.username,
             "avatar":self.owner_user.avatar,
-            "last_msg": msg,
+            "last_msg": self.fernet.encrypt(msg.encode()).decode(),
             "last_time_msg": timeMsg
         })
 
@@ -135,11 +136,11 @@ class UserData:
         except Exception:
             self.owner_user.messages['recipient_name'] = {self.recipient_user.username : []}
             message = self.owner_user.messages['recipient_name'][self.recipient_user.username]
-
+        # encMessage = self.fernet.encrypt(input_message.encode())
         message.append({
             "id" : len(message) + 1,
             "time" : datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"),
-            'content' : input_message,
+            'content' : self.fernet.encrypt(input_message.encode()).decode(), # Шифрование
             'sender_name' : self.owner_user.username
         })
         self.update_chat_list(input_message, datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"))
@@ -155,7 +156,7 @@ class UserData:
         message.append({
             "id" : len(message) + 1,
             "time" : datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"),
-            'content' : input_message,
+            'content' : self.fernet.encrypt(input_message.encode()).decode(), # Шифрование
             'sender_name' : self.owner_user.username
         })
         
