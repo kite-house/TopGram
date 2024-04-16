@@ -654,6 +654,18 @@ input:not(:placeholder-shown) {
  }
 }
 
+.delete-btn {
+  z-index: 100;       
+  width: 35px;
+  height: 30px;
+  background-color: white;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: rgba(172, 172, 172, 0.425)
+}
 
 .emoji-menu {
   position: absolute;

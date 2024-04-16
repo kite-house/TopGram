@@ -18,6 +18,14 @@ def save_timezone(request):
 def home(request, user = None):
     ''' Главная страница '''
     if request.method == "POST":
+        if request.POST.get("delete_message") != None:
+            UserData(request,user).delete_message()
+            return http.HttpResponse(render(request, 'home.html', context=UserData(request,user).data()))
+
+        if request.POST.get("delete_chat") != None:
+            UserData(request,user).delete_chat()
+            return http.HttpResponse(render(request, 'home.html', context=UserData(request,user).data()))
+
         if request.POST.get('edit_avatar') != None:
             Users.objects.get(username = request.user).edit_user(request)
             return http.HttpResponseRedirect('/')
@@ -25,7 +33,7 @@ def home(request, user = None):
         if request.POST.get('search') != None:
             return http.HttpResponseRedirect(f'/{Users().search(request)}/')
         
-        elif request.POST.get('input_message') != None:
+        if request.POST.get('input_message') != None:
             UserData(request,user).send_message()
             return http.HttpResponse(render(request, 'home.html', context=UserData(request,user).data()))
             

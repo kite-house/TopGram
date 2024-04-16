@@ -94,3 +94,74 @@ function insertEmoji(emoji) {
   var input = document.getElementById('input_message').input_message;
   input.value += emoji;
 }
+
+function deleteMessage(message_id) {
+  $.ajaxSetup({
+    headers: {
+        "X-CSRFToken": getCookie("csrftoken")
+    }
+  });
+  // Создание AJAX-запроса
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', document.URL, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  // Отправка данных на сервер Django
+  $.ajax({
+    url: document.URL,
+    type: "post",
+    data: {
+      delete_message : message_id
+    },
+    success: function(data){
+      $("body").html(data);
+    }
+  })
+
+  // Обработка ответа от сервера
+  xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+          // Обработка успешного ответа от сервера
+          console.log('Сообщение успешно удалено');
+      } else {
+          // Обработка ошибки
+          console.error('Ошибка удаления сообщения');
+      }
+  };
+}
+
+
+function deleteChat(chat_id) {
+  $.ajaxSetup({
+    headers: {
+        "X-CSRFToken": getCookie("csrftoken")
+    }
+  });
+  // Создание AJAX-запроса
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', document.URL, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  // Отправка данных на сервер Django
+  $.ajax({
+    url: document.URL,
+    type: "post",
+    data: {
+      delete_chat : chat_id
+    },
+    success: function(data){
+      $("body").html(data);
+    }
+  })
+
+  // Обработка ответа от сервера
+  xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+          // Обработка успешного ответа от сервера
+          console.log('Чат успешно удалено');
+      } else {
+          // Обработка ошибки
+          console.error('Ошибка удаления чата');
+      }
+  };
+}

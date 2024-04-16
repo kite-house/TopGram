@@ -106,20 +106,28 @@ class UserData:
                 if self.owner_user.username in chat['name']:
                     self.recipient_user.chat_list.remove(chat)
 
+        # обновляем все ид
+
+        for idx, item in enumerate(self.owner_user.chat_list, start=1):
+            item['id'] = idx
+
+        for idx, item in enumerate(self.recipient_user.chat_list, start=1):
+            item['id'] = idx
+
         # Изменение чат листа у отправителя.
 
         self.owner_user.chat_list.append({
             "id": len(self.owner_user.chat_list) + 1,
             "name": self.recipient_user.username,
             "avatar":self.recipient_user.avatar,
-            "last_msg": f"Вы: {self.fernet.encrypt(msg.encode()).decode()}",
+            "last_msg": self.fernet.encrypt(f'Вы: {msg}'.encode()).decode(),
             "last_time_msg": timeMsg
         })
 
         # Изменение чат листа у получателя
 
         self.recipient_user.chat_list.append({
-            "id": len(self.owner_user.chat_list) + 1,
+            "id": len(self.recipient_user.chat_list) + 1,
             "name": self.owner_user.username,
             "avatar":self.owner_user.avatar,
             "last_msg": self.fernet.encrypt(msg.encode()).decode(),
@@ -128,7 +136,6 @@ class UserData:
 
     def send_message(self):
         ''' Отправка и получение сообщений '''
-        
         input_message = self.request.POST.get('input_message')
 
         try:
@@ -143,9 +150,6 @@ class UserData:
             'content' : self.fernet.encrypt(input_message.encode()).decode(), # Шифрование
             'sender_name' : self.owner_user.username
         })
-        self.update_chat_list(input_message, datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"))
-
-        self.owner_user.save()
 
         try:
             message = self.recipient_user.messages['recipient_name'][self.owner_user.username]
@@ -159,7 +163,76 @@ class UserData:
             'content' : self.fernet.encrypt(input_message.encode()).decode(), # Шифрование
             'sender_name' : self.owner_user.username
         })
+
+        self.update_chat_list(input_message, datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"))
+
+        self.owner_user.save()
         
         self.recipient_user.save()
 
         return message[-1]
+    
+    def delete_message(self):
+        ''' Удаление сообщений '''
+        message_id = int(self.request.POST.get("delete_message")) - 1
+        owner_messages = self.owner_user.messages['recipient_name'][self.recipient_user.username]
+        recipient_messages = self.recipient_user.messages['recipient_name'][self.owner_user.username]
+
+        if message_id < len(owner_messages):
+            owner_messages.pop(message_id)
+            for idx, item in enumerate(owner_messages, start=1):
+                item['id'] = idx
+            self.owner_user.save()
+
+        if message_id < len(recipient_messages):
+            recipient_messages.pop(message_id)
+            for idx, item in enumerate(recipient_messages, start=1):
+                item['id'] = idx
+            self.recipient_user.save()
+
+
+        # Если сообщение последнее, то удаляем из чат листа.
+        if message_id == len(owner_messages) and message_id  == len(recipient_messages) :
+            if message_id > 0:
+                self.update_chat_list(self.fernet.decrypt(owner_messages[message_id - 1]['content']).decode(), owner_messages[message_id - 1]['time'])
+            else:
+                self.update_chat_list(" ", " ")
+
+            self.owner_user.save()
+            self.recipient_user.save()
+        
+
+    def delete_chat(self):
+        ''' Удаление чатов '''
+        chat_id = int(self.request.POST.get("delete_chat")) - 1
+
+        owner_chat = self.owner_user.chat_list[chat_id]
+
+
+        recipient_chat = Users.objects.get(username = owner_chat['name']).chat_list
+        
+        try:
+            index = next(index for index, item in enumerate(recipient_chat) if item["name"] == self.owner_user.username)
+        except StopIteration:
+            index = 0
+
+
+        self.owner_user.chat_list.pop(chat_id)
+        self.recipient_user.chat_list.pop(index)
+
+
+        for idx, item in enumerate(self.owner_user.chat_list, start=1):
+            item['id'] = idx
+
+        for idx, item in enumerate(self.recipient_user.chat_list, start=1):
+            item['id'] = idx
+
+
+        del self.owner_user.messages['recipient_name'][self.recipient_user.username]
+        del self.recipient_user.messages['recipient_name'][self.owner_user.username]
+
+        self.owner_user.save()
+        self.recipient_user.save()
+
+
+

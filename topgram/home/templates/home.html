@@ -86,23 +86,24 @@
         {% endif %}   
 
         {% for chat in chat_list %}
-        <a href="/{{chat.username}}" style ="text-decoration: none; color: black;">
-        {% if chat.name == recipient_name %}
-        <div class="msg active {{chat.is_online}}">
-        {% else %}
-        <div class="msg {{chat.is_online}}">
-        {% endif %}
-          <link href="{{chat.username}}">
-          <img class="msg-profile" src= {{chat.avatar}}>
-          <div class="msg-detail">
-            <div class="msg-username">{{chat.name}}</div>
-            <div class="msg-content">
-              <span class="msg-message">{{chat.last_msg}}</span>
-              <span class="msg-date">{{chat.last_time_msg}}</span>
+          {% if chat.name == recipient_name %}
+          <div class="msg active {{chat.is_online}}" onmouseover="this.querySelector('.delete-btn').style.display='block'" onmouseout="this.querySelector('.delete-btn').style.display='none'">
+          {% else %}
+          <div class="msg {{chat.is_online}}" onmouseover="this.querySelector('.delete-btn').style.display='block'" onmouseout="this.querySelector('.delete-btn').style.display='none'">
+          {% endif %}
+          <button class="delete-btn" style="display: none;" onclick="deleteChat(' {{ chat.id }} ')">❌</button>
+          <a href="/{{chat.username}}" style ="text-decoration: none; color: black;">
+            <link href="{{chat.username}}">
+            <img class="msg-profile" src= {{chat.avatar}}>
+            <div class="msg-detail">
+              <div class="msg-username">{{chat.name}}</div>
+              <div class="msg-content">
+                <span class="msg-message">{{chat.last_msg}}</span>
+                <span class="msg-date">{{chat.last_time_msg}}</span>
+              </div>
+            </a>
             </div>
           </div>
-        </div>
-        </a>
         {% endfor %}
         <div class="overlay"></div>
       </div>
@@ -121,7 +122,9 @@
         </div>
         <div class="chat-area-main">
           {% for message in messages %}
-          <div class="chat-msg {{message.sender_status}}">
+          
+          <div class="chat-msg {{message.sender_status}}" onmouseover="this.querySelector('.delete-btn').style.display='block'" onmouseout="this.querySelector('.delete-btn').style.display='none'">
+            <button class="delete-btn" style="display: none;" onclick="deleteMessage(' {{ message.id }} ')">❌</button>
             <div class="chat-msg-profile">
               <img class="chat-msg-img" src="{{message.sender_avatar}}" alt="">
               <div class="chat-msg-date">{{message.time}}</div>
@@ -130,6 +133,7 @@
               <div class="chat-msg-text">{{message.content}}</div>
             </div>
           </div>
+          
           {% endfor %}
         </div> 
         <form id = 'input_message' action = '' autocomplete="off"> {% csrf_token %}
