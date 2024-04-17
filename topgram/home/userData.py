@@ -141,9 +141,10 @@ class UserData:
         try:
             message = self.owner_user.messages['recipient_name'][self.recipient_user.username]
         except Exception:
-            self.owner_user.messages['recipient_name'] = {self.recipient_user.username : []}
+            print('здесь!')
+            self.owner_user.messages['recipient_name'][self.recipient_user.username] = []
             message = self.owner_user.messages['recipient_name'][self.recipient_user.username]
-        # encMessage = self.fernet.encrypt(input_message.encode())
+
         message.append({
             "id" : len(message) + 1,
             "time" : datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"),
@@ -154,7 +155,8 @@ class UserData:
         try:
             message = self.recipient_user.messages['recipient_name'][self.owner_user.username]
         except Exception:
-            self.recipient_user.messages['recipient_name'] = {self.owner_user.username : []}
+            print('здесь 222!')
+            self.recipient_user.messages['recipient_name'][self.owner_user.username] = []
             message = self.recipient_user.messages['recipient_name'][self.owner_user.username]
 
         message.append({
@@ -210,15 +212,16 @@ class UserData:
 
 
         recipient_chat = Users.objects.get(username = owner_chat['name']).chat_list
-        
+
         try:
             index = next(index for index, item in enumerate(recipient_chat) if item["name"] == self.owner_user.username)
         except StopIteration:
             index = 0
 
-
-        self.owner_user.chat_list.pop(chat_id)
-        self.recipient_user.chat_list.pop(index)
+        if len(self.owner_user.chat_list) > 0:
+            self.owner_user.chat_list.pop(chat_id)
+        if len(self.recipient_user.chat_list) > 0:
+            self.recipient_user.chat_list.pop(index)
 
 
         for idx, item in enumerate(self.owner_user.chat_list, start=1):
@@ -227,9 +230,10 @@ class UserData:
         for idx, item in enumerate(self.recipient_user.chat_list, start=1):
             item['id'] = idx
 
-
-        del self.owner_user.messages['recipient_name'][self.recipient_user.username]
-        del self.recipient_user.messages['recipient_name'][self.owner_user.username]
+        if self.recipient_user.username in self.owner_user.messages['recipient_name']:
+            del self.owner_user.messages['recipient_name'][self.recipient_user.username]
+        if self.owner_user.username in self.recipient_user.messages['recipient_name']:
+            del self.recipient_user.messages['recipient_name'][self.owner_user.username]
 
         self.owner_user.save()
         self.recipient_user.save()
