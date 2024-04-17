@@ -35,7 +35,7 @@
             </a>
       </div>
       
-      {% if request.path == '/settings/' %}
+      {% if request.path == '/settings/' or request.path == '/settings_error/'%}
       <style>
         .overlay {
           display: block;
@@ -50,6 +50,19 @@
 
       <div class="overlay"></div>
       <div class="edit_user">
+        {% if request.path == '/settings_error/' %}
+        <div class="wrapper-warning">
+          <div class="card">
+            <div class="icon"><i class="fas fa-exclamation-circle"></i></div>
+            <div class="subject">
+              <h4>{{request.GET.error}}<h4>
+            </div >
+            <a href="/{{chat.name}}" style ="text-decoration: none; color: black;">
+            <div class="icon-times"><i class="fas fa-times"></i></div>
+            </a>
+          </div>
+        </div>
+        {% endif %}   
         <p class = 'label_settings' >Профиль</p>
           <img class="edit_avatar" src="{{owner_avatar}}">
         <form action = '' role = 'settings' role="settings" autocomplete="off" method="post"> {% csrf_token %}
@@ -71,7 +84,6 @@
         </form>
 
         {% if request.path == '/error_search/' %}
-        
         <div class="wrapper-warning">
           <div class="card">
             <div class="icon"><i class="fas fa-exclamation-circle"></i></div>

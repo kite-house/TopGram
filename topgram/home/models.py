@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.utils.translation import gettext as _
 from django.utils import timezone
-
+from Oauth2.data_inspector import valid_edit_user
 
 class Users(models.Model):
     username = models.CharField(max_length = 150)
@@ -12,15 +12,10 @@ class Users(models.Model):
     messages = models.JSONField(default=dict)
     last_online = models.DateTimeField(blank=True, null=True)
 
-    def edit_user(self,request):
-        if request.POST.get("edit_avatar") != '':
-            self.avatar = request.POST.get('edit_avatar')            
-
-        if request.POST.get("edit_display_name") != '':
-            self.display_name = request.POST.get('edit_display_name')
-
+    @valid_edit_user
+    def edit_user(self, request):
         self.save()
-
+    
     def search(self, request):
         try:
             Users.objects.get(username = request.POST.get('search'))
