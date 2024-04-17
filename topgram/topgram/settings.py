@@ -31,9 +31,9 @@ FERNET_SECRET_KEY = os.environ.get('FERNET_SECRET_KEY')
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 CSRF_TRUSTED_ORIGINS = ['https://*.topgram.com']
 
@@ -47,8 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-    'Oauth2',
-    'error_handler'
+    'Oauth2'
 ]
 
 MIDDLEWARE = [
@@ -66,7 +65,7 @@ ROOT_URLCONF = 'topgram.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['Oauth2/templates', 'home/templates', 'error_handler/templates'],
+        'DIRS': ['Oauth2/templates', 'home/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,10 +129,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Default primary key field type
