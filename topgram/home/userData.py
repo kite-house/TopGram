@@ -109,41 +109,30 @@ class UserData:
         ''' Отправка и получение сообщений '''
         input_message = self.request.POST.get('input_message')
 
-        try:
-            message = self.owner_user.messages['recipient_name'][self.recipient_user.username]
-        except Exception:
-            print('здесь!')
-            self.owner_user.messages['recipient_name'][self.recipient_user.username] = []
-            message = self.owner_user.messages['recipient_name'][self.recipient_user.username]
+    
+        def add_message_to_user(messages, sender ,username, input_message):
+            try:
+                user_messages = messages['recipient_name'][username]
+            except KeyError:
+                try:
+                    messages['recipient_name'][username] = []
+                except KeyError:
+                    messages['recipient_name'] = {username : []}
+                user_messages = messages['recipient_name'][username]
 
-        message.append({
-            "id" : len(message) + 1,
-            "time" : datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"),
-            'content' : self.fernet.encrypt(input_message.encode()).decode(), # Шифрование
-            'sender_name' : self.owner_user.username
-        })
+            user_messages.append({
+                "id": len(user_messages) + 1,
+                "time": datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"),
+                'content': self.fernet.encrypt(input_message.encode()).decode(),
+                'sender_name': sender.username
+            })
 
-        try:
-            message = self.recipient_user.messages['recipient_name'][self.owner_user.username]
-        except Exception:
-            print('здесь 222!')
-            self.recipient_user.messages['recipient_name'][self.owner_user.username] = []
-            message = self.recipient_user.messages['recipient_name'][self.owner_user.username]
-
-        message.append({
-            "id" : len(message) + 1,
-            "time" : datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"),
-            'content' : self.fernet.encrypt(input_message.encode()).decode(), # Шифрование
-            'sender_name' : self.owner_user.username
-        })
+        add_message_to_user(self.owner_user.messages, self.owner_user ,self.recipient_user.username, input_message)
+        add_message_to_user(self.recipient_user.messages, self.recipient_user ,self.owner_user.username, input_message)
 
         self.update_chat_list(input_message, datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"))
-
         self.owner_user.save()
-        
         self.recipient_user.save()
-
-        return message[-1]
     
     def delete_message(self):
         ''' Удаление сообщений '''
