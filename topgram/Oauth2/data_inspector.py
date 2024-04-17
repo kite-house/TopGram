@@ -21,7 +21,7 @@ def valid_registration(func):
             return output('Логин должен содержать минимум 4 символа!')
 
         if len(password) < 5:
-            return output('Логин должен содержать минимум 5 символов!')
+            return output('Пароь должен содержать минимум 5 символов!')
 
         if User.objects.filter(username = username):
             return output('Данный пользовател уже существует!')
@@ -55,6 +55,9 @@ def valid_edit_user(func):
 
             if len(display_name) < 4:
                 return output("Имя должно содержать минимум 4 символа!")
+            
+            if len(display_name) > 30:
+                return output("Имя не должно содержать больше 30 символов!")
 
             self.display_name = display_name
 
