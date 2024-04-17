@@ -11,6 +11,7 @@ class Valid():
 
             username = request.POST.get('username')
             password = request.POST.get('password')
+
             if username == None or password == None:
                 return output(' ')
             
@@ -25,6 +26,12 @@ class Valid():
 
             if models.User.objects.filter(username = username):
                 return output('Данный пользовател уже существует!')
+            
+            if True if all(char not in username for char in '!@"#№;$%^:&?*()_-=+<,. `~йцукенгшщз{[]}хъфывапролджэячсмитьбю') else False:
+                return output('Логин не может содержать данные символы!')
+            
+            if True if all(char not in username for char in 'йцукенгшщзхъфывапролджэячсмитьбю') else False:
+                return output('Пароль должен содержать английские символы!')
                 
             return func(request, username, password)
         return wrapper
@@ -40,13 +47,16 @@ class Valid():
                 if 'https://' not in avatar:
                     return output("Введите ссылку на аватарку!")
 
-                response = requests.head(avatar)
-                content_type = response.headers.get('content-type')
                 try:
-                    if 'image' not in content_type:
+                    response = requests.head(avatar)
+                    content_type = response.headers.get('content-type')
+                    try:
+                        if 'image' not in content_type:
+                            return output('Некоректная ссылка!')
+                    except Exception:
                         return output('Некоректная ссылка!')
                 except Exception:
-                    return output('Некоректная ссылка!')
+                    return output('Не удалось загрузить изображение!')
 
                 self.avatar = avatar
 
