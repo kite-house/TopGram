@@ -1,6 +1,6 @@
 
 from datetime import datetime
-from home.models import Users
+from Oauth2.models import User
 import pytz
 from django.utils import timezone
 from cryptography.fernet import Fernet
@@ -10,16 +10,16 @@ class UserData:
     ''' Класс для обработки запросов пользователя '''
     def __init__(self, request, user):
         try:
-            recipient_user = Users.objects.get(username = user)
+            recipient_user = User.objects.get(username = user)
         except Exception:
-            recipient_user = Users.objects.get(username = request.user)
+            recipient_user = User.objects.get(username = request.user)
 
         request.session.setdefault('user_timezone', 'Europe/Dublin')
 
         self.request = request
         self.user = user
         self.recipient_user = recipient_user
-        self.owner_user = Users.objects.get(username = request.user)
+        self.owner_user = User.objects.get(username = request.user)
         self.owner_user.last_online = timezone.now()
         self.owner_user.save(update_fields=['last_online'])
         self.fernet = Fernet(FERNET_SECRET_KEY)
@@ -41,8 +41,8 @@ class UserData:
             messages_edit = [{
                 "id": message['id'],
                 "time": self.display_time(message['time']),
-                'sender_status': 'owner' if message['sender_name'] == self.owner_user.username else '',
-                "sender_avatar": Users.objects.get(username=message['sender_name']).avatar,
+                'sender_status': 'owner' if message['sender_name'] == self.owner_user.username else ' ',
+                "sender_avatar": User.objects.get(username=message['sender_name']).avatar,
                 "content": self.fernet.decrypt(message['content']).decode()
             } for message in messages]
         except Exception:
@@ -52,9 +52,9 @@ class UserData:
         chat_list = [{
             "id": chat['id'],
             'username': chat['name'],
-            'name': Users.objects.get(username=chat['name']).display_name,
-            "avatar": Users.objects.get(username=chat['name']).avatar,
-            "is_online": Users.objects.get(username=chat['name']).is_online(),
+            'name': User.objects.get(username=chat['name']).display_name,
+            "avatar": User.objects.get(username=chat['name']).avatar,
+            "is_online": User.objects.get(username=chat['name']).is_online(),
             "last_msg": self.fernet.decrypt(chat['last_msg']).decode(),
             "last_time_msg": self.display_time(chat['last_time_msg'])
         } for chat in self.owner_user.chat_list]
@@ -128,7 +128,7 @@ class UserData:
             })
 
         add_message_to_user(self.owner_user.messages, self.owner_user ,self.recipient_user.username, input_message)
-        add_message_to_user(self.recipient_user.messages, self.recipient_user ,self.owner_user.username, input_message)
+        add_message_to_user(self.recipient_user.messages, self.owner_user ,self.owner_user.username, input_message)
 
         self.update_chat_list(input_message, datetime.now(pytz.timezone(self.request.session['user_timezone'])).strftime("%d.%m.%Y %H:%M"))
         self.owner_user.save()
@@ -164,7 +164,7 @@ class UserData:
         ''' Удаление чатов '''
         chat_id = int(self.request.POST.get("delete_chat")) - 1
         owner_chat = self.owner_user.chat_list[chat_id]
-        recipient_user = Users.objects.get(username = owner_chat['name'])
+        recipient_user = User.objects.get(username = owner_chat['name'])
 
         try:
             index = next(index for index, item in enumerate(recipient_user.chat_list) if item["name"] == self.owner_user.username)

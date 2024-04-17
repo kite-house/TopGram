@@ -24,11 +24,13 @@ urlpatterns = [
     path('', home.home, name = 'home'),
     path('home', home.home, name = 'home'),
     path('save_timezone/', home.save_timezone, name = 'save_timezone'),
+    path('<slug:user>/', home.home, name = 'home'),
     path('<slug:user>', home.home, name = 'home'),
     path('settings/', home.home, name = 'home'),
     path('settings_error/', home.home, name = 'home'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/registration/', Oauth2.registration)
+    path('accounts/registration', Oauth2.registration),
+    path('error_search/', home.home, name = 'home')
 ]
 
 handler404 = 'error_handler.views.error404'

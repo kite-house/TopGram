@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django import http
 from django.contrib.auth.decorators import login_required
-from home.models import Users 
+from Oauth2.models import User
 from django.http import JsonResponse
 
 from json import loads
@@ -28,10 +28,10 @@ def home(request, user = None):
             return http.HttpResponse(render(request, 'home.html', context=UserData(request,user).data()))
 
         if request.POST.get('edit_avatar') != None:
-            return Users.objects.get(username = request.user).edit_user(request)
+            return User.objects.get(username = request.user).edit_user(request)
 
         if request.POST.get('search') != None:
-            return http.HttpResponseRedirect(f'/{Users().search(request)}/')
+            return http.HttpResponseRedirect(f'/{User().search(request)}/')
         
         if request.POST.get('input_message') != None:
             UserData(request,user).send_message()
