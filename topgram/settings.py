@@ -32,11 +32,11 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["topgram.up.railway.app"]
 
 # Edit the following line and place your railway URL, and your custom URL in the array.
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.up.railway.app", 
+    "https://topgram.up.railway.app", 
     # NOTE: Place your custom url here if any
 ]
 # Application definition
