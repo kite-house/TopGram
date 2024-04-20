@@ -27,11 +27,11 @@ class Valid():
             if models.User.objects.filter(username = username):
                 return output('Данный пользовател уже существует!')
             
-            if True if all(char not in username for char in '!@"#№;$%^:&?*()_-=+<,. `~йцукенгшщз{[]}хъфывапролджэячсмитьбю') else False:
+            if False if all(char not in username for char in '!@"#№;$%^:&?*()_-=+<,. `~йцукенгшщз{[]}хъфывапролджэячсмитьбю') else True:
                 return output('Логин не может содержать данные символы!')
             
-            if True if all(char not in username for char in 'йцукенгшщзхъфывапролджэячсмитьбю') else False:
-                return output('Пароль должен содержать английские символы!')
+            if False if all(char not in password for char in 'йцукенгшщзхъфывапролджэячсмитьбю') else True:
+                return output('Пароль не должен содержать русские буквы!')
                 
             return func(request, username, password)
         return wrapper
