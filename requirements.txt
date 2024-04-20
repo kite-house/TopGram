@@ -5,11 +5,8 @@ certifi==2024.2.2
 cffi==1.16.0
 charset-normalizer==3.3.2
 cryptography==42.0.5
-Django==5.0.3
-gunicorn==22.0.0
+Django==4.2.11
 idna==3.7
-mysqlclient==2.2.4
-packaging==24.0
 pillow==10.3.0
 pycparser==2.22
 python-dotenv==1.0.1
@@ -20,4 +17,7 @@ soupsieve==2.5
 sqlparse==0.4.4
 tzdata==2024.1
 urllib3==2.2.1
+gunicorn==22.0.0
+packaging==24.0
+mysqlclient==2.1.1
 whitenoise==6.6.0
