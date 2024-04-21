@@ -39,7 +39,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://topgram.up.railway.app", 
     # NOTE: Place your custom url here if any
 ]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -137,10 +136,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / '/static'
+STATIC_URL = 'topgram/static/'
+STATIC_ROOT = BASE_DIR / '/topgram/static'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+    BASE_DIR / 'static',
 ]
 STATICFILES_STORAGE="whitenoise.storage.CompressedManifestStaticFilesStorage"
 
