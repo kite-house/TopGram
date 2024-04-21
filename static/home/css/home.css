@@ -507,7 +507,7 @@ input:not(:placeholder-shown) {
   display: block;
   background-color: var(--theme-bg-color);
   position: fixed;
-  width: calc(100% - 492px);
+  width: 65.8%;
   z-index: 1;
   margin-top: -11px;
 
@@ -614,7 +614,7 @@ input:not(:placeholder-shown) {
 .chat-area-footer {
  display: flex;
  border-top: 1px solid var(--border-color);
- width: calc(100% - 492px);
+ width: 65.8%;
  padding: 20px 20px;
  height: 25px;
  align-items: center;
