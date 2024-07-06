@@ -1,9 +1,7 @@
-# Topgram
+# Topgram #RU
 
-## RU
-
-
-### Чат-мессенджер реализованные на Python3, с помощью Django.
+> [!IMPORTANT]
+> Чат-мессенджер реализованные на Python3, с помощью Django.
 
 ### Функционал:
 
@@ -35,10 +33,11 @@
 
 
 
-## ENG
 
+# Topgram #ENG
 
-### Chat messenger optimized in Python 3, using Django.
+> [!IMPORTANT]
+> Chat messenger optimized in Python 3, using Django.
 
 ### Functionality:
 
